@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenge Stories - Voice Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-input: #0d0d14;
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2a2a3a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 50%, #c4b5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .voice-count {
+            display: inline-block;
+            background: var(--bg-card);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-top: 0.5rem;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* Text Area */
+        textarea {
+            width: 100%;
+            height: 320px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            align-items: center;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .stat-value.warning {
+            color: var(--warning);
+        }
+
+        .stat-value.error {
+            color: var(--error);
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-bar.warning {
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
+        }
+
+        .progress-bar.error {
+            background: linear-gradient(90deg, var(--error), #f87171);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 8px;
+        }
+
+        select optgroup {
+            background: var(--bg-secondary);
+            color: var(--accent);
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        /* Two column layout for dropdowns */
+        .dropdown-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .dropdown-row .form-group {
+            margin-bottom: 0;
+        }
+
+        /* Range Slider */
+        .range-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .range-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), #7c3aed);
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+        }
+
+        .audio-player.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .audio-player audio {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .download-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .download-links a {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .download-links a:hover {
+            background: var(--bg-input);
+            border-color: var(--accent);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Status Message */
+        .status {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .status.visible {
+            display: block;
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+
+        /* Generation Progress */
+        .generation-progress {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .generation-progress.visible {
+            display: block;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-title {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .progress-stats {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .generation-progress-bar {
+            height: 8px;
+            background: var(--bg-input);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .generation-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Selected voice preview */
+        .voice-preview {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .voice-preview .gender-icon {
+            font-size: 1rem;
+        }
+
+        .voice-preview .voice-name {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎙️ Revenge Stories</h1>
+            <p>AI Voice Generator for YouTube</p>
+            <span class="voice-count" id="voiceCount">Loading voices...</span>
+        </header>
+
+        <div class="main-grid">
+            <!-- Left Column - Text Input -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📝</div>
+                    <h2>Story Text</h2>
+                </div>
+
+                <textarea id="storyText"
+                    placeholder="Paste your revenge story here...
+
+Example:
+My neighbor had been stealing packages from my porch for months. I finally had enough. So I ordered a glitter bomb and a GPS tracker..."></textarea>
+
+                <div class="stats-bar">
+                    <div class="stat">
+                        <span class="stat-label">Characters:</span>
+                        <span class="stat-value" id="charCount">0</span>
+                        <span class="stat-label">/ {{ char_limit }}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Words:</span>
+                        <span class="stat-value" id="wordCount">0</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="charProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="audio-player" id="audioPlayer">
+                    <audio controls id="audioElement"></audio>
+                    <div class="download-links">
+                        <a href="#" id="downloadMp3">⬇️ Download MP3</a>
+                        <a href="#" id="downloadSrt">📄 Download SRT</a>
+                    </div>
+                </div>
+
+                <div class="status" id="statusMessage"></div>
+
+                <div class="generation-progress" id="generationProgress">
+                    <div class="progress-header">
+                        <span class="progress-title">🎙️ Generating...</span>
+                        <span class="progress-stats" id="progressStats">0%</span>
+                    </div>
+                    <div class="generation-progress-bar">
+                        <div class="generation-progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span id="chunkInfo">Chunk 0 of 0</span>
+                        <span id="etaInfo">Estimating...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Settings -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">⚙️</div>
+                        <h2>Settings</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label>File Name</label>
+                        <input type="text" id="fileName" placeholder="revenge_story_001" value="revenge_story">
+                    </div>
+
+                    <div class="dropdown-row">
+                        <div class="form-group">
+                            <label>Language</label>
+                            <select id="languageSelect">
+                                <option value="">Loading...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select id="genderSelect">
+                                <option value="all">All</option>
+                                <option value="Male">♂️ Male</option>
+                                <option value="Female">♀️ Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Voice</label>
+                        <select id="voiceSelect">
+                            <option value="">Select a language first</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Speech Rate</label>
+                        <div class="range-group">
+                            <input type="range" id="rateSlider" min="-50" max="50" value="-5">
+                            <span class="range-value" id="rateValue">-5%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pitch</label>
+                        <div class="range-group">
+                            <input type="range" id="pitchSlider" min="-50" max="50" value="-5">
+                            <span class="range-value" id="pitchValue">-5Hz</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="generateBtn" onclick="generateAudio()">
+                        <span>🎙️ Generate Voice</span>
+                    </button>
+                </div>
+
+                <div class="card" style="margin-top: 1rem;">
+                    <div class="card-header">
+                        <div class="card-icon">💡</div>
+                        <h2>Tips</h2>
+                    </div>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.25rem;">
+                        <li>Keep stories under 5,000 characters</li>
+                        <li>Use dramatic pauses with "..."</li>
+                        <li>Slower rate (-10% to -20%) for drama</li>
+                        <li>Lower pitch adds gravitas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            Phase 1: Voice Generation | More features coming soon...
+        </footer>
+    </div>
+
+    <script>
+        const charLimit = {{ char_limit }};
+        let allVoices = {};
+        let currentVoices = [];
+
+        // DOM Elements
+        const storyText = document.getElementById('storyText');
+        const charCount = document.getElementById('charCount');
+        const wordCount = document.getElementById('wordCount');
+        const charProgress = document.getElementById('charProgress');
+        const generateBtn = document.getElementById('generateBtn');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const audioElement = document.getElementById('audioElement');
+        const statusMessage = document.getElementById('statusMessage');
+        const languageSelect = document.getElementById('languageSelect');
+        const genderSelect = document.getElementById('genderSelect');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const voiceCountEl = document.getElementById('voiceCount');
+
+        // Load voices on page load
+        document.addEventListener('DOMContentLoaded', loadVoices);
+
+        async function loadVoices() {
+            try {
+                const response = await fetch('/api/voices');
+                allVoices = await response.json();
+
+                // Count total voices
+                let totalVoices = 0;
+                for (const lang in allVoices) {
+                    totalVoices += allVoices[lang].length;
+                }
+                voiceCountEl.textContent = `${totalVoices} voices in ${Object.keys(allVoices).length} languages`;
+
+                // Populate language dropdown
+                languageSelect.innerHTML = '';
+
+                // English first
+                if (allVoices['English']) {
+                    const option = document.createElement('option');
+                    option.value = 'English';
+                    option.textContent = `🇺🇸 English (${allVoices['English'].length})`;
+                    languageSelect.appendChild(option);
+                }
+
+                // Then other languages sorted
+                const sortedLangs = Object.keys(allVoices).filter(l => l !== 'English').sort();
+                for (const lang of sortedLangs) {
+                    const option = document.createElement('option');
+                    option.value = lang;
+                    option.textContent = `${lang} (${allVoices[lang].length})`;
+                    languageSelect.appendChild(option);
+                }
+
+                // Load English voices by default
+                updateVoiceList();
+
+            } catch (error) {
+                console.error('Failed to load voices:', error);
+                voiceCountEl.textContent = 'Failed to load voices';
+            }
+        }
+
+        function updateVoiceList() {
+            const language = languageSelect.value;
+            const gender = genderSelect.value;
+
+            let voices = allVoices[language] || [];
+
+            // Filter by gender if selected
+            if (gender !== 'all') {
+                voices = voices.filter(v => v.gender === gender);
+            }
+
+            currentVoices = voices;
+            renderVoiceOptions(voices);
+        }
+
+        function renderVoiceOptions(voices) {
+            voiceSelect.innerHTML = '';
+
+            if (voices.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No voices found';
+                voiceSelect.appendChild(option);
+                return;
+            }
+
+            // Group by gender
+            const males = voices.filter(v => v.gender === 'Male');
+            const females = voices.filter(v => v.gender === 'Female');
+
+            if (males.length > 0) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = '♂️ Male Voices';
+                males.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voice.id;
+                    option.textContent = `${voice.name} (${voice.region})`;
+                    optgroup.appendChild(option);
+                });
+                voiceSelect.appendChild(optgroup);
+            }
+
+            if (females.length > 0) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = '♀️ Female Voices';
+                females.forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voice.id;
+                    option.textContent = `${voice.name} (${voice.region})`;
+                    optgroup.appendChild(option);
+                });
+                voiceSelect.appendChild(optgroup);
+            }
+
+            // Select first voice
+            if (voiceSelect.options.length > 0) {
+                voiceSelect.selectedIndex = 1; // Skip optgroup
+            }
+        }
+
+        // Event handlers
+        languageSelect.addEventListener('change', updateVoiceList);
+        genderSelect.addEventListener('change', updateVoiceList);
+
+        // Update stats on text change
+        storyText.addEventListener('input', updateStats);
+
+        function updateStats() {
+            const text = storyText.value;
+            const chars = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+
+            charCount.textContent = chars.toLocaleString();
+            wordCount.textContent = words.toLocaleString();
+
+            const percentage = Math.min((chars / charLimit) * 100, 100);
+            charProgress.style.width = percentage + '%';
+
+            charProgress.classList.remove('warning', 'error');
+            charCount.classList.remove('warning', 'error');
+
+            if (chars > charLimit) {
+                charProgress.classList.add('error');
+                charCount.classList.add('error');
+                generateBtn.disabled = true;
+            } else if (chars > charLimit * 0.8) {
+                charProgress.classList.add('warning');
+                charCount.classList.add('warning');
+                generateBtn.disabled = false;
+            } else {
+                generateBtn.disabled = false;
+            }
+        }
+
+        // Sliders
+        const rateSlider = document.getElementById('rateSlider');
+        const rateValue = document.getElementById('rateValue');
+        rateSlider.addEventListener('input', () => {
+            const val = parseInt(rateSlider.value);
+            rateValue.textContent = (val >= 0 ? '+' : '') + val + '%';
+        });
+
+        const pitchSlider = document.getElementById('pitchSlider');
+        const pitchValue = document.getElementById('pitchValue');
+        pitchSlider.addEventListener('input', () => {
+            const val = parseInt(pitchSlider.value);
+            pitchValue.textContent = (val >= 0 ? '+' : '') + val + 'Hz';
+        });
+
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status visible ' + type;
+        }
+
+        function hideStatus() {
+            statusMessage.className = 'status';
+        }
+
+        async function generateAudio() {
+            const text = storyText.value.trim();
+            if (!text) {
+                showStatus('Please enter some text', 'error');
+                return;
+            }
+
+            const filename = document.getElementById('fileName').value.trim() || 'story';
+            const voice = voiceSelect.value;
+
+            if (!voice) {
+                showStatus('Please select a voice', 'error');
+                return;
+            }
+
+            const rate = rateSlider.value + '%';
+            const pitch = pitchSlider.value + 'Hz';
+
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="spinner"></div><span>Starting...</span>';
+            hideStatus();
+            audioPlayer.classList.remove('visible');
+
+            // Show progress bar
+            const progressDiv = document.getElementById('generationProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressStats = document.getElementById('progressStats');
+            const chunkInfo = document.getElementById('chunkInfo');
+            const etaInfo = document.getElementById('etaInfo');
+
+            progressDiv.classList.add('visible');
+            progressFill.style.width = '0%';
+            progressStats.textContent = '0%';
+            chunkInfo.textContent = 'Starting...';
+            etaInfo.textContent = 'Calculating...';
+
+            try {
+                // Start generation with progress tracking
+                const startResponse = await fetch('/generate_with_progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, filename, voice, rate, pitch })
+                });
+
+                const startData = await startResponse.json();
+
+                if (startData.error) {
+                    showStatus(startData.error, 'error');
+                    progressDiv.classList.remove('visible');
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<span>🎙️ Generate Voice</span>';
+                    return;
+                }
+
+                const jobId = startData.job_id;
+                const totalChunks = startData.total_chunks;
+
+                generateBtn.innerHTML = '<div class="spinner"></div><span>Generating...</span>';
+
+                // Poll for progress
+                let complete = false;
+                while (!complete) {
+                    await new Promise(resolve => setTimeout(resolve, 500)); // Poll every 500ms
+
+                    const progressResponse = await fetch(`/progress/${jobId}`);
+                    const progress = await progressResponse.json();
+
+                    if (progress.error) {
+                        showStatus(progress.error, 'error');
+                        complete = true;
+                        break;
+                    }
+
+                    // Update progress UI
+                    progressFill.style.width = progress.percent + '%';
+                    progressStats.textContent = progress.percent + '%';
+
+                    if (progress.total_chunks > 1) {
+                        chunkInfo.textContent = `Chunk ${progress.current_chunk} of ${progress.total_chunks}`;
+                    } else {
+                        chunkInfo.textContent = 'Processing...';
+                    }
+
+                    if (progress.eta_seconds !== null && progress.eta_seconds > 0) {
+                        const mins = Math.floor(progress.eta_seconds / 60);
+                        const secs = progress.eta_seconds % 60;
+                        if (mins > 0) {
+                            etaInfo.textContent = `~${mins}m ${secs}s remaining`;
+                        } else {
+                            etaInfo.textContent = `~${secs}s remaining`;
+                        }
+                    } else if (progress.percent > 0) {
+                        etaInfo.textContent = 'Almost done...';
+                    }
+
+                    if (progress.status === 'complete') {
+                        complete = true;
+
+                        // Show success
+                        audioElement.src = progress.audio_file;
+                        document.getElementById('downloadMp3').href = progress.audio_file;
+                        document.getElementById('downloadSrt').href = progress.srt_file;
+                        audioPlayer.classList.add('visible');
+
+                        const sizeKB = (progress.file_size / 1024).toFixed(1);
+                        let msg = `Generated: ${progress.char_count.toLocaleString()} chars, ${progress.word_count} words, ${sizeKB} KB`;
+                        if (totalChunks > 1) {
+                            msg += ` (${totalChunks} parts)`;
+                        }
+                        showStatus(msg, 'success');
+                    } else if (progress.status === 'error') {
+                        complete = true;
+                        showStatus('Error: ' + (progress.error || 'Unknown error'), 'error');
+                    }
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+
+            progressDiv.classList.remove('visible');
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<span>🎙️ Generate Voice</span>';
+        }
+    </script>
+</body>
+
+</html>
