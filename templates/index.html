@@ -933,10 +933,11 @@ My neighbor had been stealing packages from my porch for months. I finally had e
                     if (progress.status === 'complete') {
                         complete = true;
 
-                        // Show success
-                        audioElement.src = progress.audio_file;
-                        document.getElementById('downloadMp3').href = progress.audio_file;
-                        document.getElementById('downloadSrt').href = progress.srt_file;
+                        // Show success - add timestamp to bust browser cache
+                        const cacheBust = `?t=${Date.now()}`;
+                        audioElement.src = progress.audio_file + cacheBust;
+                        document.getElementById('downloadMp3').href = progress.audio_file + cacheBust;
+                        document.getElementById('downloadSrt').href = progress.srt_file + cacheBust;
                         audioPlayer.classList.add('visible');
 
                         const sizeKB = (progress.file_size / 1024).toFixed(1);
