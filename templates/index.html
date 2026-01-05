@@ -1042,8 +1042,8 @@ My neighbor had been stealing packages from my porch for months. I finally had e
             const tier = document.getElementById('bestQualitySelect').value;
             const lang = document.getElementById('bestLangSelect').value;
             const gender = document.getElementById('bestGenderSelect').value;
-            const voiceSelect = document.getElementById('bestVoiceSelect');
-            const options = voiceSelect.querySelectorAll('option[data-lang]');
+            const bestVoiceSelect = document.getElementById('bestVoiceSelect');
+            const options = bestVoiceSelect.querySelectorAll('option[data-lang]');
 
             options.forEach(opt => {
                 const optTier = opt.dataset.tier || 'ultra';
@@ -1056,14 +1056,14 @@ My neighbor had been stealing packages from my porch for months. I finally had e
             });
 
             // Hide optgroups with no visible options
-            voiceSelect.querySelectorAll('optgroup').forEach(group => {
+            bestVoiceSelect.querySelectorAll('optgroup').forEach(group => {
                 const visibleOptions = group.querySelectorAll('option[data-lang]');
                 const hasVisible = Array.from(visibleOptions).some(opt => opt.style.display !== 'none');
                 group.style.display = hasVisible ? '' : 'none';
             });
 
             // Reset selection
-            voiceSelect.value = '';
+            bestVoiceSelect.value = '';
         }
 
         function applyBestVoice() {
