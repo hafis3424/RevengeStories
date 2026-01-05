@@ -299,6 +299,37 @@
             color: var(--text-secondary);
         }
 
+        /* Speed Presets */
+        .speed-presets {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .preset-btn {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: 0.8rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .help-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
         /* Buttons */
         .btn {
             display: inline-flex;
@@ -614,11 +645,18 @@ My neighbor had been stealing packages from my porch for months. I finally had e
                     </div>
 
                     <div class="form-group">
-                        <label>Speech Rate</label>
+                        <label>Voice Speed <span
+                                style="font-weight: normal; font-size: 0.8em; color: var(--text-muted);">(Rate)</span></label>
+                        <div class="speed-presets">
+                            <button class="preset-btn" onclick="setSpeed(-25)">🐢 Slow</button>
+                            <button class="preset-btn" onclick="setSpeed(0)">🎯 Normal</button>
+                            <button class="preset-btn" onclick="setSpeed(25)">🐇 Fast</button>
+                        </div>
                         <div class="range-group">
                             <input type="range" id="rateSlider" min="-50" max="50" value="-5">
                             <span class="range-value" id="rateValue">-5%</span>
                         </div>
+                        <div class="help-text">Controls how fast the AI speaks. 0% is normal speed.</div>
                     </div>
 
                     <div class="form-group">
@@ -814,6 +852,12 @@ My neighbor had been stealing packages from my porch for months. I finally had e
         // Sliders
         const rateSlider = document.getElementById('rateSlider');
         const rateValue = document.getElementById('rateValue');
+
+        function setSpeed(val) {
+            rateSlider.value = val;
+            rateValue.textContent = (val >= 0 ? '+' : '') + val + '%';
+        }
+
         rateSlider.addEventListener('input', () => {
             const val = parseInt(rateSlider.value);
             rateValue.textContent = (val >= 0 ? '+' : '') + val + '%';

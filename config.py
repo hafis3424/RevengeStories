@@ -23,7 +23,7 @@ CHUNK_SIZE = 4500
 # Maximum characters per subtitle entry
 # Words are grouped into sentences until they hit this limit
 # Keep this reasonable for readability (150-400 chars typical)
-MAX_SUBTITLE_CHARS = 350
+MAX_SUBTITLE_CHARS = 200
 
 
 # =============================================================================
