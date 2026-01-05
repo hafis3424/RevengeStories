@@ -299,37 +299,6 @@
             color: var(--text-secondary);
         }
 
-        /* Speed Presets */
-        .speed-presets {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .preset-btn {
-            flex: 1;
-            padding: 0.4rem;
-            font-size: 0.8rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .preset-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: var(--bg-secondary);
-        }
-
-        .help-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-        }
-
         /* Buttons */
         .btn {
             display: inline-flex;
@@ -513,43 +482,6 @@
             color: var(--text-muted);
         }
 
-        /* Best Voices List */
-        .best-voices-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .voice-category {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .voice-chip {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            text-align: left;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .voice-chip:hover {
-            border-color: var(--accent);
-            background: var(--bg-secondary);
-            transform: translateX(4px);
-        }
-
         /* Footer */
         .footer {
             text-align: center;
@@ -682,18 +614,11 @@ My neighbor had been stealing packages from my porch for months. I finally had e
                     </div>
 
                     <div class="form-group">
-                        <label>Voice Speed <span
-                                style="font-weight: normal; font-size: 0.8em; color: var(--text-muted);">(Rate)</span></label>
-                        <div class="speed-presets">
-                            <button class="preset-btn" onclick="setSpeed(-25)">🐢 Slow</button>
-                            <button class="preset-btn" onclick="setSpeed(0)">🎯 Normal</button>
-                            <button class="preset-btn" onclick="setSpeed(25)">🐇 Fast</button>
-                        </div>
+                        <label>Speech Rate</label>
                         <div class="range-group">
                             <input type="range" id="rateSlider" min="-50" max="50" value="-5">
                             <span class="range-value" id="rateValue">-5%</span>
                         </div>
-                        <div class="help-text">Controls how fast the AI speaks. 0% is normal speed.</div>
                     </div>
 
                     <div class="form-group">
@@ -707,137 +632,6 @@ My neighbor had been stealing packages from my porch for months. I finally had e
                     <button class="btn btn-primary" id="generateBtn" onclick="generateAudio()">
                         <span>🎙️ Generate Voice</span>
                     </button>
-                </div>
-
-                <div class="card" style="margin-top: 1rem;">
-                    <div class="card-header">
-                        <div class="card-icon">🌟</div>
-                        <h2>Best Voices</h2>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 0.75rem;">
-                        <label>Quality Tier</label>
-                        <select id="bestQualitySelect" onchange="updateBestVoices()">
-                            <option value="ultra">✨ Ultra Natural (100% Perfect)</option>
-                            <option value="highly">⭐ Highly Rated (Very Good)</option>
-                        </select>
-                    </div>
-
-                    <div class="dropdown-row" style="margin-bottom: 0.75rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Language</label>
-                            <select id="bestLangSelect" onchange="updateBestVoices()">
-                                <option value="English">🇺🇸 English</option>
-                                <option value="Spanish">🇪🇸 Spanish</option>
-                                <option value="French">🇫🇷 French</option>
-                                <option value="German">🇩🇪 German</option>
-                                <option value="Hindi">🇮🇳 Hindi</option>
-                                <option value="Portuguese">🇧🇷 Portuguese</option>
-                                <option value="Japanese">🇯🇵 Japanese</option>
-                                <option value="Chinese">🇨🇳 Chinese</option>
-                                <option value="Arabic">🇸🇦 Arabic</option>
-                                <option value="Korean">🇰🇷 Korean</option>
-                                <option value="Italian">🇮🇹 Italian</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label>Gender</label>
-                            <select id="bestGenderSelect" onchange="updateBestVoices()">
-                                <option value="all">All</option>
-                                <option value="Male">♂️ Male</option>
-                                <option value="Female">♀️ Female</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label>Voice</label>
-                        <select id="bestVoiceSelect" onchange="applyBestVoice()">
-                            <option value="">Select a voice...</option>
-
-                            <!-- ✨ ULTRA NATURAL (100% Perfect) -->
-                            <optgroup label="✨ Ultra Natural - English">
-                                <option value="en-GB-RyanNeural" data-lang="English" data-gender="Male"
-                                    data-tier="ultra">Ryan (UK) - #1 Storyteller</option>
-                                <option value="en-US-GuyNeural" data-lang="English" data-gender="Male"
-                                    data-tier="ultra">Guy (US) - #1 Professional</option>
-                                <option value="en-US-AriaNeural" data-lang="English" data-gender="Female"
-                                    data-tier="ultra">Aria - #1 Natural Female</option>
-                                <option value="en-US-JennyNeural" data-lang="English" data-gender="Female"
-                                    data-tier="ultra">Jenny - Perfect Clarity</option>
-                            </optgroup>
-                            <optgroup label="✨ Ultra Natural - Other Languages">
-                                <option value="es-ES-ElviraNeural" data-lang="Spanish" data-gender="Female"
-                                    data-tier="ultra">Elvira - #1 Spanish</option>
-                                <option value="fr-FR-DeniseNeural" data-lang="French" data-gender="Female"
-                                    data-tier="ultra">Denise - #1 French</option>
-                                <option value="de-DE-KatjaNeural" data-lang="German" data-gender="Female"
-                                    data-tier="ultra">Katja - #1 German</option>
-                                <option value="hi-IN-SwaraNeural" data-lang="Hindi" data-gender="Female"
-                                    data-tier="ultra">Swara - #1 Hindi</option>
-                                <option value="ja-JP-NanamiNeural" data-lang="Japanese" data-gender="Female"
-                                    data-tier="ultra">Nanami - #1 Japanese</option>
-                                <option value="zh-CN-XiaoxiaoNeural" data-lang="Chinese" data-gender="Female"
-                                    data-tier="ultra">Xiaoxiao - #1 Chinese</option>
-                                <option value="pt-BR-FranciscaNeural" data-lang="Portuguese" data-gender="Female"
-                                    data-tier="ultra">Francisca - #1 Portuguese</option>
-                                <option value="ko-KR-SunHiNeural" data-lang="Korean" data-gender="Female"
-                                    data-tier="ultra">SunHi - #1 Korean</option>
-                                <option value="it-IT-ElsaNeural" data-lang="Italian" data-gender="Female"
-                                    data-tier="ultra">Elsa - #1 Italian</option>
-                                <option value="ar-SA-ZariyahNeural" data-lang="Arabic" data-gender="Female"
-                                    data-tier="ultra">Zariyah - #1 Arabic</option>
-                            </optgroup>
-
-                            <!-- ⭐ HIGHLY RATED (Very Good) -->
-                            <optgroup label="⭐ Highly Rated - English Male">
-                                <option value="en-US-ChristopherNeural" data-lang="English" data-gender="Male"
-                                    data-tier="highly">Christopher - Calm Narrator</option>
-                                <option value="en-US-EricNeural" data-lang="English" data-gender="Male"
-                                    data-tier="highly">Eric - Deep Voice</option>
-                                <option value="en-US-DavisNeural" data-lang="English" data-gender="Male"
-                                    data-tier="highly">Davis - Authoritative</option>
-                                <option value="en-AU-WilliamNeural" data-lang="English" data-gender="Male"
-                                    data-tier="highly">William - Australian</option>
-                            </optgroup>
-                            <optgroup label="⭐ Highly Rated - English Female">
-                                <option value="en-GB-SoniaNeural" data-lang="English" data-gender="Female"
-                                    data-tier="highly">Sonia - British Warm</option>
-                                <option value="en-US-JaneNeural" data-lang="English" data-gender="Female"
-                                    data-tier="highly">Jane - Upbeat</option>
-                                <option value="en-US-SaraNeural" data-lang="English" data-gender="Female"
-                                    data-tier="highly">Sara - Friendly</option>
-                                <option value="en-GB-LibbyNeural" data-lang="English" data-gender="Female"
-                                    data-tier="highly">Libby - Neutral British</option>
-                                <option value="en-AU-NatashaNeural" data-lang="English" data-gender="Female"
-                                    data-tier="highly">Natasha - Australian</option>
-                            </optgroup>
-                            <optgroup label="⭐ Highly Rated - International">
-                                <option value="es-ES-AlvaroNeural" data-lang="Spanish" data-gender="Male"
-                                    data-tier="highly">Alvaro - Spanish Male</option>
-                                <option value="es-MX-DaliaNeural" data-lang="Spanish" data-gender="Female"
-                                    data-tier="highly">Dalia - Mexican Female</option>
-                                <option value="fr-FR-HenriNeural" data-lang="French" data-gender="Male"
-                                    data-tier="highly">Henri - French Male</option>
-                                <option value="de-DE-ConradNeural" data-lang="German" data-gender="Male"
-                                    data-tier="highly">Conrad - German Male</option>
-                                <option value="hi-IN-MadhurNeural" data-lang="Hindi" data-gender="Male"
-                                    data-tier="highly">Madhur - Hindi Male</option>
-                                <option value="ja-JP-KeitaNeural" data-lang="Japanese" data-gender="Male"
-                                    data-tier="highly">Keita - Japanese Male</option>
-                                <option value="zh-CN-YunxiNeural" data-lang="Chinese" data-gender="Male"
-                                    data-tier="highly">Yunxi - Chinese Male</option>
-                                <option value="pt-BR-AntonioNeural" data-lang="Portuguese" data-gender="Male"
-                                    data-tier="highly">Antonio - Brazilian Male</option>
-                                <option value="ko-KR-InJoonNeural" data-lang="Korean" data-gender="Male"
-                                    data-tier="highly">InJoon - Korean Male</option>
-                                <option value="it-IT-DiegoNeural" data-lang="Italian" data-gender="Male"
-                                    data-tier="highly">Diego - Italian Male</option>
-                                <option value="ar-SA-HamedNeural" data-lang="Arabic" data-gender="Male"
-                                    data-tier="highly">Hamed - Arabic Male</option>
-                            </optgroup>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="card" style="margin-top: 1rem;">
@@ -1020,12 +814,6 @@ My neighbor had been stealing packages from my porch for months. I finally had e
         // Sliders
         const rateSlider = document.getElementById('rateSlider');
         const rateValue = document.getElementById('rateValue');
-
-        function setSpeed(val) {
-            rateSlider.value = val;
-            rateValue.textContent = (val >= 0 ? '+' : '') + val + '%';
-        }
-
         rateSlider.addEventListener('input', () => {
             const val = parseInt(rateSlider.value);
             rateValue.textContent = (val >= 0 ? '+' : '') + val + '%';
@@ -1036,71 +824,6 @@ My neighbor had been stealing packages from my porch for months. I finally had e
         pitchSlider.addEventListener('input', () => {
             const val = parseInt(pitchSlider.value);
             pitchValue.textContent = (val >= 0 ? '+' : '') + val + 'Hz';
-        });
-
-        function updateBestVoices() {
-            const tier = document.getElementById('bestQualitySelect').value;
-            const lang = document.getElementById('bestLangSelect').value;
-            const gender = document.getElementById('bestGenderSelect').value;
-            const bestVoiceSelect = document.getElementById('bestVoiceSelect');
-            const options = bestVoiceSelect.querySelectorAll('option[data-lang]');
-
-            options.forEach(opt => {
-                const optTier = opt.dataset.tier || 'ultra';
-                const optLang = opt.dataset.lang;
-                const optGender = opt.dataset.gender;
-                const matchTier = optTier === tier;
-                const matchLang = optLang === lang;
-                const matchGender = gender === 'all' || optGender === gender;
-                opt.style.display = (matchTier && matchLang && matchGender) ? '' : 'none';
-            });
-
-            // Hide optgroups with no visible options
-            bestVoiceSelect.querySelectorAll('optgroup').forEach(group => {
-                const visibleOptions = group.querySelectorAll('option[data-lang]');
-                const hasVisible = Array.from(visibleOptions).some(opt => opt.style.display !== 'none');
-                group.style.display = hasVisible ? '' : 'none';
-            });
-
-            // Reset selection
-            bestVoiceSelect.value = '';
-        }
-
-        function applyBestVoice() {
-            const voiceId = document.getElementById('bestVoiceSelect').value;
-            if (!voiceId) return;
-
-            const option = document.getElementById('bestVoiceSelect').selectedOptions[0];
-            const lang = option.dataset.lang;
-            const gender = option.dataset.gender;
-            const tier = option.dataset.tier || 'ultra';
-
-            // Auto-select the Best Voices filters (above selection)
-            document.getElementById('bestQualitySelect').value = tier;
-            document.getElementById('bestLangSelect').value = lang;
-            document.getElementById('bestGenderSelect').value = gender;
-
-            // Find matching language in main dropdown
-            const langKey = Object.keys(allVoices).find(k => k.includes(lang));
-            if (langKey) {
-                languageSelect.value = langKey;
-            }
-
-            // Set gender BEFORE updating voice list so it filters correctly
-            genderSelect.value = gender;
-            updateVoiceList();
-
-            // Set voice after the dropdown is populated
-            voiceSelect.value = voiceId;
-
-            // Feedback
-            showStatus(`Selected: ${option.textContent.split(' - ')[0]}`, 'success');
-            setTimeout(hideStatus, 2000);
-        }
-
-        // Initialize best voices filter
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(updateBestVoices, 100);
         });
 
         function showStatus(message, type) {
